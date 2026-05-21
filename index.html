@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#0b0c0e" />
+<title>Bolão Copa 2026 · Cartela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-screen="welcome">
+
+<!-- Background decorativo (apenas em telas grandes; desaparece no mobile) -->
+<div class="bg-frame" aria-hidden="true">
+  <div class="bg-frame__row">
+    <span>BOLÃO</span><span>·</span><span>COPA</span><span>·</span><span>2026</span><span>·</span><span>BOLÃO</span><span>·</span><span>COPA</span><span>·</span><span>2026</span>
+  </div>
+  <div class="bg-frame__row">
+    <span>72 JOGOS</span><span>·</span><span>12 GRUPOS</span><span>·</span><span>3 PALPITES BÔNUS</span><span>·</span><span>72 JOGOS</span><span>·</span><span>12 GRUPOS</span>
+  </div>
+</div>
+
+<!-- Indicador "salvo" -->
+<div class="saved-pill" id="savedPill" aria-live="polite">
+  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span>salvo</span>
+</div>
+
+<!-- App container -->
+<main class="app" id="app">
+
+  <!-- Header (telas internas) -->
+  <header class="topbar" id="topbar" hidden>
+    <button class="topbar__back" id="backBtn" aria-label="Voltar">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="topbar__meta">
+      <div class="topbar__line">
+        <span class="topbar__title" id="topbarTitle">Grupo 1/12</span>
+        <span class="topbar__counter" id="topbarCounter">0/72</span>
+      </div>
+      <div class="topbar__bar"><div class="topbar__fill" id="progressFill"></div></div>
+    </div>
+  </header>
+
+  <!-- ============ Screen: Welcome ============ -->
+  <section class="screen welcome" data-screen="welcome">
+    <div class="welcome__brand">
+      <div class="welcome__eyebrow">B O L Ã O &nbsp;·&nbsp; C O P A &nbsp;·&nbsp; 2 0 2 6</div>
+      <div class="welcome__hero">
+        <div class="welcome__hero-row">
+          <span class="welcome__num">2</span>
+          <div class="welcome__hero-stack">
+            <span class="welcome__hero-tag">CARTELA</span>
+            <span class="welcome__hero-tag welcome__hero-tag--accent">OFICIAL</span>
+          </div>
+        </div>
+        <div class="welcome__hero-row welcome__hero-row--shift">
+          <span class="welcome__num welcome__num--accent">26</span>
+        </div>
+      </div>
+      <p class="welcome__sub">72 jogos · 12 grupos · 3 palpites bônus. Sem login, sem app — só você, seus chutes e o grupo do zap.</p>
+    </div>
+
+    <label class="field">
+      <span class="field__label">Seu nome completo</span>
+      <input type="text" id="nomeInput" class="field__input" placeholder="ex: João da Silva" autocomplete="name" maxlength="40" />
+    </label>
+
+    <div class="teampick">
+      <div class="teampick__head">
+        <span class="field__label">Time do coração</span>
+        <span class="teampick__hint" id="teampickHint">define a cor da sua cartela</span>
+      </div>
+      <div class="teampick__grid" id="teamGrid" role="listbox" aria-label="Escolha seu time"></div>
+    </div>
+
+    <div class="screen__spacer"></div>
+
+    <button class="cta" id="startBtn" disabled>
+      <span>Começar bolão</span>
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </section>
+
+  <!-- ============ Screen: Group (template) ============ -->
+  <section class="screen group" data-screen="group" hidden>
+    <div class="group__header">
+      <div class="group__letter" id="groupLetter">A</div>
+      <div class="group__sub">
+        <div class="group__title" id="groupTitle">Grupo A</div>
+        <div class="group__teams" id="groupTeams"></div>
+      </div>
+    </div>
+
+    <ol class="matches" id="matchesList"></ol>
+
+    <div class="screen__spacer"></div>
+  </section>
+
+  <!-- ============ Screen: Bônus ============ -->
+  <section class="screen bonus" data-screen="bonus" hidden>
+    <div class="bonus__head">
+      <div class="bonus__eyebrow">Reta final</div>
+      <h1 class="bonus__title">Palpites bônus</h1>
+      <p class="bonus__sub">Três chutes que valem pontos extras. Sem pressa.</p>
+    </div>
+
+    <div class="bonus__card">
+      <div class="bonus__icon">🏆</div>
+      <div class="bonus__body">
+        <label class="bonus__label" for="campeaoSelect">Campeão do mundo</label>
+        <div class="select-wrap">
+          <select id="campeaoSelect" class="bonus__select">
+            <option value="">— Selecione um país —</option>
+          </select>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bonus__card">
+      <div class="bonus__icon">⚽</div>
+      <div class="bonus__body">
+        <label class="bonus__label" for="artilheiroInput">Artilheiro do torneio</label>
+        <input type="text" id="artilheiroInput" class="bonus__input" placeholder="ex: Vinícius Jr." maxlength="40" />
+      </div>
+    </div>
+
+    <div class="bonus__card">
+      <div class="bonus__icon">🐴</div>
+      <div class="bonus__body">
+        <label class="bonus__label" for="zebraInput">Zebra do torneio</label>
+        <input type="text" id="zebraInput" class="bonus__input" placeholder="seleção surpresa" maxlength="40" />
+        <span class="bonus__hint">qual seleção vai surpreender o mundo?</span>
+      </div>
+    </div>
+
+    <div class="screen__spacer"></div>
+  </section>
+
+  <!-- ============ Screen: Summary / Share ============ -->
+  <section class="screen summary" data-screen="summary" hidden>
+    <div class="summary__hero">
+      <div class="summary__check">
+        <svg viewBox="0 0 48 48" width="36" height="36" aria-hidden="true"><path d="M12 25l8 8 16-18" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1 class="summary__title">Cartela pronta!</h1>
+      <p class="summary__name" id="summaryName">João da Silva</p>
+      <div class="summary__stats">
+        <div class="summary__stat">
+          <div class="summary__stat-num" id="statJogos">0</div>
+          <div class="summary__stat-label">jogos</div>
+        </div>
+        <div class="summary__stat-sep"></div>
+        <div class="summary__stat">
+          <div class="summary__stat-num" id="statBonus">0</div>
+          <div class="summary__stat-label">bônus</div>
+        </div>
+        <div class="summary__stat-sep"></div>
+        <div class="summary__stat summary__stat--team">
+          <div class="summary__team-flag" id="statTeamFlag"></div>
+          <div class="summary__stat-label" id="statTeamName">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary__actions">
+      <button class="cta cta--wa" id="shareWa">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20.5 3.5A11.7 11.7 0 0 0 2.3 18.3L1 23l4.9-1.3a11.7 11.7 0 0 0 17.6-10A11.6 11.6 0 0 0 20.5 3.5Zm-1.6 16.5a9.7 9.7 0 0 1-14.9 1.6L3 21l.4-1.4A9.7 9.7 0 1 1 18.9 20Zm-2.4-6.1c-.3-.1-1.6-.8-1.9-.9-.3-.1-.4-.1-.6.1-.2.3-.7.9-.8 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4a8.6 8.6 0 0 1-1.6-2c-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.1-.6-1.4-.8-2-.2-.5-.4-.4-.6-.5h-.5c-.2 0-.4.1-.6.3-.2.3-.8.8-.8 2s.9 2.4 1 2.6c.1.2 1.7 2.7 4.2 3.8.6.3 1 .4 1.4.5.6.2 1.1.2 1.6.1.5-.1 1.6-.6 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.5-.3Z" fill="currentColor"/></svg>
+        <span>Compartilhar no zap</span>
+      </button>
+      <button class="cta cta--ghost" id="downloadPdf">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Baixar PDF</span>
+      </button>
+      <button class="cta cta--text" id="editBtn">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M14 5l5 5L8 21H3v-5L14 5z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>
+        <span>Editar palpites</span>
+      </button>
+    </div>
+
+    <div class="summary__list" id="summaryList"></div>
+    <div class="screen__spacer"></div>
+  </section>
+
+  <!-- ============ Screen: View only (URL share) ============ -->
+  <section class="screen viewonly" data-screen="viewonly" hidden>
+    <div class="viewonly__banner">
+      <span class="viewonly__eyebrow">cartela compartilhada</span>
+      <h1 class="viewonly__title" id="viewonlyName">cartela</h1>
+      <div class="viewonly__sub" id="viewonlySub">—</div>
+    </div>
+    <div class="summary__list" id="viewonlyList"></div>
+    <button class="cta cta--ghost" id="makeOwnBtn">
+      <span>Quero fazer a minha</span>
+    </button>
+    <div class="screen__spacer"></div>
+  </section>
+
+</main>
+
+<!-- Footer / nav -->
+<footer class="navbar" id="navbar" hidden>
+  <button class="navbar__back" id="navBackBtn">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="navbar__next" id="navNextBtn">
+    <span id="navNextLabel">Próximo grupo</span>
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</footer>
+
+<!-- FAB chutar restantes -->
+<button class="fab" id="fabRandom" hidden title="Chutar palpites aleatórios">
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+    <path d="M3 17l6-6m0 6L3 11M14 17h7m-4-4l4 4-4 4M14 7h7m-4-4l4 4-4 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span>chutar restantes</span>
+</button>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status"></div>
+
+<!-- PDF render area (escondido) -->
+<div id="pdfRoot" aria-hidden="true" style="position:fixed; left:-99999px; top:0; width:794px;"></div>
+
+<!-- Tweaks panel placeholder (built dinamicamente quando ativado) -->
+<div id="tweaksMount"></div>
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<!-- Data + cores dos times (também há jogos.json para deploy/edição) -->
+<script src="data.js"></script>
+<script src="team-colors.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
